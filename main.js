@@ -1,44 +1,35 @@
-window.onload = function () {
-  const list = document.getElementById('product-list');
+window.onload = async function () {
+  const results = document.getElementById('results');
 
-  if (!products.length) {
-    list.innerHTML = "<p>No products available at the moment.</p>";
-    return;
-  }
+  products.forEach(async (product) => {
+    const card = document.createElement('div');
+    card.className = 'card';
 
-  products.forEach((p) => {
-    const div = document.createElement('div');
-    div.className = 'card';
+    const retailers = {
+      Target: `https://www.target.com/s?searchTerm=${product.upc}`,
+      BestBuy: `https://www.bestbuy.com/site/searchpage.jsp?st=${product.upc}`,
+      GameStop: `https://www.gamestop.com/search/?q=${product.upc}`
+    };
 
-    const isPinned = p.pinned === true;
+    card.innerHTML = `<h2>${product.name}</h2><p>UPC: ${product.upc}</p><ul id="r-${product.upc}"></ul>`;
+    results.appendChild(card);
 
-    div.innerHTML = `
-      <h2>${isPinned ? '🔧 ' : ''}${p.name}</h2>
-      ${isPinned ? '<p><em>This is a system check product.</em></p>' : ''}
-      <p><strong>UPC:</strong> ${p.upc}</p>
-      <p><strong>MSRP:</strong> ${p.msrp}</p>
-      <p><strong>Release Date:</strong> ${p.release_date}</p>
-      <p><strong>Retailers:</strong></p>
-      <ul id="retailers-${p.upc}"></ul>
-    `;
+    const ul = document.getElementById(`r-${product.upc}`);
 
-    list.appendChild(div);
-
-    const retailerList = document.getElementById(`retailers-${p.upc}`);
-
-    Object.entries(p.retailers).forEach(([name, url]) => {
+    Object.entries(retailers).forEach(([store, url]) => {
       const li = document.createElement('li');
-      retailerList.appendChild(li);
+      li.textContent = `${store}: Checking...`;
+      ul.appendChild(li);
 
       const testImg = new Image();
-
-      // Use domain-level favicon as availability test
       const domain = new URL(url).hostname;
       testImg.onload = () => {
-        li.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${name}</a>`;
+        li.innerHTML = `${store}: <a href="${url}" target="_blank">Available ✅</a>`;
+        li.className = 'status available';
       };
       testImg.onerror = () => {
-        li.innerHTML = `<span>${name} – <em>Unavailable</em></span>`;
+        li.innerHTML = `${store}: Unavailable ❌`;
+        li.className = 'status unavailable';
       };
 
       testImg.src = `https://${domain}/favicon.ico`;
