@@ -10,8 +10,11 @@ window.onload = function () {
     const div = document.createElement('div');
     div.className = 'card';
 
+    const isPinned = p.pinned === true;
+
     div.innerHTML = `
-      <h2>${p.name}</h2>
+      <h2>${isPinned ? '🔧 ' : ''}${p.name}</h2>
+      ${isPinned ? '<p><em>This is a system check product.</em></p>' : ''}
       <p><strong>UPC:</strong> ${p.upc}</p>
       <p><strong>MSRP:</strong> ${p.msrp}</p>
       <p><strong>Release Date:</strong> ${p.release_date}</p>
@@ -21,15 +24,15 @@ window.onload = function () {
 
     list.appendChild(div);
 
-    // After DOM renders, populate retailer links with fallback
     const retailerList = document.getElementById(`retailers-${p.upc}`);
-    retailerList.innerHTML = ''; // clear loading text
+    retailerList.innerHTML = '';
 
     Object.entries(p.retailers).forEach(([name, url]) => {
       const li = document.createElement('li');
-
-      // Use a workaround: create an invisible image to detect if the link resolves
       const testImg = new Image();
+
+      // Get just the base domain for the favicon test
+      const domain = new URL(url).hostname;
       testImg.onload = () => {
         li.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${name}</a>`;
       };
@@ -37,8 +40,8 @@ window.onload = function () {
         li.innerHTML = `<span>${name} – <em>Unavailable</em></span>`;
       };
 
-      // Load an image from the domain (will fail if dead link or invalid domain)
-      testImg.src = `${url}/favicon.ico`;
+      // Load the favicon from the domain root instead of the product URL
+      testImg.src = `https://${domain}/favicon.ico`;
 
       retailerList.appendChild(li);
     });
