@@ -1,38 +1,29 @@
-window.onload = async function () {
+window.onload = function () {
   const results = document.getElementById('results');
 
-  products.forEach(async (product) => {
+  products.forEach(product => {
     const card = document.createElement('div');
     card.className = 'card';
 
-    const retailers = {
-      Target: `https://www.target.com/s?searchTerm=${product.upc}`,
-      BestBuy: `https://www.bestbuy.com/site/searchpage.jsp?st=${product.upc}`,
-      GameStop: `https://www.gamestop.com/search/?q=${product.upc}`
-    };
+    const targetURL = `https://www.target.com/s?searchTerm=${product.upc}`;
 
-    card.innerHTML = `<h2>${product.name}</h2><p>UPC: ${product.upc}</p><ul id="r-${product.upc}"></ul>`;
+    card.innerHTML = `
+      <h2>${product.name}</h2>
+      <p>UPC: ${product.upc}</p>
+      <p id="status-${product.upc}">Checking Target...</p>
+    `;
     results.appendChild(card);
 
-    const ul = document.getElementById(`r-${product.upc}`);
+    const statusEl = document.getElementById(`status-${product.upc}`);
 
-    Object.entries(retailers).forEach(([store, url]) => {
-      const li = document.createElement('li');
-      li.textContent = `${store}: Checking...`;
-      ul.appendChild(li);
+    const testImg = new Image();
+    testImg.onload = () => {
+      statusEl.innerHTML = `<a href="${targetURL}" target="_blank" class="status available">Available ✅</a>`;
+    };
+    testImg.onerror = () => {
+      statusEl.innerHTML = `<span class="status unavailable">Unavailable ❌</span>`;
+    };
 
-      const testImg = new Image();
-      const domain = new URL(url).hostname;
-      testImg.onload = () => {
-        li.innerHTML = `${store}: <a href="${url}" target="_blank">Available ✅</a>`;
-        li.className = 'status available';
-      };
-      testImg.onerror = () => {
-        li.innerHTML = `${store}: Unavailable ❌`;
-        li.className = 'status unavailable';
-      };
-
-      testImg.src = `https://${domain}/favicon.ico`;
-    });
+    testImg.src = `https://www.target.com/favicon.ico`;
   });
 };
