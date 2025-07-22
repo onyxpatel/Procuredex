@@ -1,5 +1,16 @@
 const products = [
   {
+    name: "🔧 Control – Tide Original Liquid Laundry Detergent (Target)",
+    upc: "037000875469",
+    msrp: "$12.99",
+    release_date: "-",
+    pinned: true,
+    retailers: {
+      Target: "https://www.target.com/p/tide-original-liquid-laundry-detergent-64-loads-92-fl-oz/-/A-13294329"
+    }
+  },
+  // Pokémon TCG entries below (unchanged)...
+  {
     name: "Pokémon Scarlet & Violet 151 Elite Trainer Box",
     upc: "820650853193",
     msrp: "$49.99",
