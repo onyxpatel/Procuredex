@@ -1,5 +1,15 @@
 const products = [
   {
+    name: "System Check – Pokémon Center TCG Page",
+    upc: "000000000000",
+    msrp: "-",
+    release_date: "-",
+    pinned: true,
+    retailers: {
+      PokémonCenter: "https://www.pokemoncenter.com/category/collectibles-trading-card-game"
+    }
+  },
+  {
     name: "Pokémon Scarlet & Violet 151 Elite Trainer Box",
     upc: "820650853193",
     msrp: "$49.99",
